@@ -1,1 +1,63 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f0f0f0;
+    text-align: center;
+}
+
+#game-container {
+    width: 90%;
+    margin: 0 auto;
+    max-width: 800px;
+}
+
+h1 {
+    color: #333;
+}
+
+#field {
+    position: relative;
+    width: 100%;
+    height: 400px;
+    background-color: green;
+    border: 5px solid #333;
+    margin-top: 20px;
+}
+
+.player {
+    width: 40px;
+    height: 40px;
+    background-color: blue;
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    border-radius: 50%;
+}
+
+.ball {
+    width: 20px;
+    height: 20px;
+    background-color: white;
+    position: absolute;
+    bottom: 40px;
+    left: 50%;
+    transform: translateX(-50%);
+    border-radius: 50%;
+}
+
+.goal {
+    width: 80px;
+    height: 40px;
+    background-color: red;
+    position: absolute;
+    top: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.message {
+    margin-top: 20px;
+    font-size: 20px;
+    color: #333;
+}
 
