@@ -4,15 +4,10 @@ const ball = document.getElementById('ball');
 const goal = document.getElementById('goal');
 const message = document.getElementById('message');
 
-let playerPosition = 50;  // Posición inicial del jugador (en porcentaje)
-let ballPosition = 50;  // Posición inicial de la pelota
+let playerPosition = 50; // Posición inicial del jugador (en porcentaje)
+let ballPositionX = 50; // Posición inicial horizontal de la pelota
+let ballPositionY = 60; // Posición inicial vertical de la pelota
 let ballInMotion = false;
-
-// Configuración del campo y la portería
-const fieldWidth = 100;  // 100% de ancho
-const fieldHeight = 400;
-const goalWidth = 80;
-const goalHeight = 40;
 
 // Función para mover al jugador
 function movePlayer(direction) {
@@ -27,42 +22,62 @@ function movePlayer(direction) {
 // Función para mover la pelota
 function moveBall() {
     if (ballInMotion) {
-        let ballLeft = parseInt(ball.style.left);
-        if (ballLeft >= (goalPosition - goalWidth / 2) && ballLeft <= (goalPosition + goalWidth / 2) && ball.style.bottom === '40px') {
-            // Si la pelota entra en la portería
-            message.textContent = "¡Gol! Has marcado un gol.";
-            ballInMotion = false;
-        } else {
-            // Si no ha marcado gol, sigue moviendo
-            ballPosition += 1;
-            ball.style.left = ballPosition + '%';
+        ballPositionY -= 1; // La pelota sube
+        ball.style.bottom = ballPositionY + '%';
 
-            if (ballPosition > 100) {
-                // Si la pelota sale del campo
-                ballPosition = playerPosition;
-                ball.style.left = ballPosition + '%';
+        if (ballPositionY <= 10) {
+            // Verificar si la pelota entra en la portería
+            const ballLeft = parseFloat(ball.style.left);
+            const goalLeft = parseFloat(goal.style.left);
+
+            if (ballLeft >= (goalLeft - 5) && ballLeft <= (goalLeft + 5)) {
+                // Gol marcado
+                message.textContent = "¡Gol! Presiona espacio para reiniciar.";
+                ballInMotion = false;
+            } else if (ballPositionY <= 5) {
+                // La pelota salió fuera
+                message.textContent = "¡Fallaste! Presiona espacio para intentarlo de nuevo.";
                 ballInMotion = false;
             }
         }
     }
 }
 
-// Función para iniciar el movimiento de la pelota
+// Función para reiniciar la posición de la pelota
+function resetBall() {
+    ballInMotion = false;
+    ballPositionX = playerPosition; // Colocar la pelota frente al jugador
+    ballPositionY = 60;
+    ball.style.left = ballPositionX + '%';
+    ball.style.bottom = ballPositionY + '%';
+    message.textContent = "¡Intenta marcar un gol!";
+}
+
+// Función para chutar la pelota
 function kickBall() {
     if (!ballInMotion) {
         ballInMotion = true;
+        ballPositionX = playerPosition; // Fija la pelota frente al jugador
+        ball.style.left = ballPositionX + '%';
         message.textContent = "¡La pelota está en movimiento!";
-        setInterval(moveBall, 10);
     }
 }
 
-// Función para verificar si el jugador presiona las teclas
-document.addEventListener('keydown', function(event) {
+// Detectar teclas
+document.addEventListener('keydown', function (event) {
     if (event.key === 'ArrowLeft') {
         movePlayer('left');
     } else if (event.key === 'ArrowRight') {
         movePlayer('right');
     } else if (event.key === ' ') {
-        kickBall();  // Si presionas la barra espaciadora, la pelota se mueve
+        if (ballInMotion) {
+            resetBall(); // Reinicia si la pelota está en movimiento
+        } else {
+            kickBall(); // Chuta si la pelota está detenida
+        }
     }
 });
+
+// Actualizar el movimiento de la pelota
+setInterval(moveBall, 20); // Suavidad de movimiento
+
